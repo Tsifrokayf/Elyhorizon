@@ -112,7 +112,7 @@ jobs:
             # The C runtime linked in: without it the launcher asks for VCRUNTIME140.dll,
             # which only the Visual C++ redistributable installs.
             rustflags: -C target-feature=+crt-static
-    runs-on: ${{ matrix.mac && (vars.MAC_RUNNER || 'ludovics-mac-mini') || matrix.os }}
+    runs-on: ${{ matrix.mac && (vars.MAC_RUNNER || (github.repository == 'horizon-rust/horizon' && 'ludovics-mac-mini') || 'macos-14') || matrix.os }}
     # Notarizing the app and then the .dmg can take a few minutes each.
     timeout-minutes: ${{ matrix.mac && 60 || 40 }}
     env:
@@ -120,6 +120,9 @@ jobs:
       # Horizon's Azure app for Microsoft sign-in (docs/microsoft-account.md): a repository
       # variable, not a secret. Unset, the launcher says sign-in is not configured.
       HORIZON_MSA_CLIENT_ID: ${{ vars.HORIZON_MSA_CLIENT_ID }}
+      # Horizon's Ely.by app (docs/ely-account.md): a repository variable, not a secret. Unset, the
+      # launcher shows no Ely.by sign-in.
+      HORIZON_ELY_CLIENT_ID: ${{ vars.HORIZON_ELY_CLIENT_ID }}
       # The mod browser's CurseForge source (docs/mod-browser.md#curseforge): a repository secret. Unset, the
       # launcher searches Modrinth only.
       HORIZON_CURSEFORGE_API_KEY: ${{ secrets.HORIZON_CURSEFORGE_API_KEY }}
